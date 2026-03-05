@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<l10n>
+	<translationContributors/>
+	<texts>
+		<!-- Settings Section -->
+		<text name="setting_camera_section" text="Free Camera Settings"/>
+		
+		<!-- Move Speed Setting -->
+		<text name="setting_camera_cameraMoveSpeed" text="Move Speed"/>
+		<text name="setting_camera_cameraMoveSpeed_tooltip" text="Base movement speed for the free camera in meters per second"/>
+		
+		<!-- Sprint Multiplier Setting -->
+		<text name="setting_camera_cameraSprintMultiplier" text="Sprint Multiplier"/>
+		<text name="setting_camera_cameraSprintMultiplier_tooltip" text="Speed multiplier when holding Shift while moving the free camera"/>
+	</texts>
+</l10n>

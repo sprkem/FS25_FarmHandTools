@@ -23,9 +23,28 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
     </description>
     
     <extraSourceFiles>
+        <sourceFile filename="src/CameraSettings.lua"/>
         <sourceFile filename="src/FreeCamera.lua"/>
         <sourceFile filename="src/main.lua"/>
     </extraSourceFiles>
+    
+    <l10n>
+        <text name="setting_camera_section">
+            <en>Free Camera Settings</en>
+        </text>
+        <text name="setting_camera_cameraMoveSpeed">
+            <en>Move Speed</en>
+        </text>
+        <text name="setting_camera_cameraMoveSpeed_tooltip">
+            <en>Base movement speed for the free camera in meters per second</en>
+        </text>
+        <text name="setting_camera_cameraSprintMultiplier">
+            <en>Sprint Multiplier</en>
+        </text>
+        <text name="setting_camera_cameraSprintMultiplier_tooltip">
+            <en>Speed multiplier when holding Shift while moving the free camera</en>
+        </text>
+    </l10n>
     
     <multiplayer supported="true"/>
     
