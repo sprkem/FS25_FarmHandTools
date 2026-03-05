@@ -76,7 +76,11 @@ function FreeCamera:activate()
         if player ~= nil and player.camera ~= nil and player.camera.getCameraPosition ~= nil then
             -- Use PlayerCamera methods
             self.posX, self.posY, self.posZ = player.camera:getCameraPosition()
-            self.rotX, self.rotY, _ = player.camera:getRotation()
+            local pitch, yaw, _ = player.camera:getRotation()
+            
+            -- Negate pitch to match our coordinate system
+            self.rotX = -pitch
+            self.rotY = yaw
         else
             -- Fallback: get position directly from the camera node
             self.posX, self.posY, self.posZ = getWorldTranslation(self.originalCameraNode)
