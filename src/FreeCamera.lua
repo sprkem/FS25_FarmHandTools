@@ -12,7 +12,7 @@ function FreeCamera.new()
     self.isActive = false
     self.camera = nil
     self.cameraNode = nil
-    self.originalCamera = nil
+    self.originalCameraNode = nil
     
     -- Position and rotation
     self.posX = 0
@@ -65,28 +65,21 @@ function FreeCamera:activate()
         self:initialize()
     end
     
-    -- Store the original camera
-    self.originalCamera = g_cameraManager:getActiveCamera()
+    -- Store the original camera node (this is just a number/node ID)
+    self.originalCameraNode = g_cameraManager:getActiveCamera()
     
-    -- Get the player's current position and camera
-    local player = g_currentMission.player
-    if player ~= nil then
-        -- Get player position
-        local px, py, pz = getWorldTranslation(player.rootNode)
-        self.posX = px
-        self.posY = py + 1.7  -- Add eye height
-        self.posZ = pz
-        
-        -- Get the current camera rotation if available
-        local activeCamera = g_cameraManager:getActiveCamera()
-        if activeCamera ~= nil and activeCamera.rotY ~= nil then
-            self.rotX = activeCamera.rotX or 0
-            self.rotY = activeCamera.rotY or 0
+    -- Get the exact position and rotation from the active camera node
+    if self.originalCameraNode ~= nil then
+        -- First try to get from player camera object if available
+        local player = g_currentMission.player
+        if player ~= nil and player.camera ~= nil and player.camera.getCameraPosition ~= nil then
+            -- Use PlayerCamera methods
+            self.posX, self.posY, self.posZ = player.camera:getCameraPosition()
+            self.rotX, self.rotY, _ = player.camera:getRotation()
         else
-            -- Fallback to player's rotation
-            local _, ry, _ = getWorldRotation(player.rootNode)
-            self.rotX = 0
-            self.rotY = ry
+            -- Fallback: get position directly from the camera node
+            self.posX, self.posY, self.posZ = getWorldTranslation(self.originalCameraNode)
+            self.rotX, self.rotY, _ = getWorldRotation(self.originalCameraNode)
         end
         
         print(string.format("Free Camera: Starting position: %.2f, %.2f, %.2f | rotation: %.2f, %.2f", 
@@ -147,9 +140,9 @@ function FreeCamera:deactivate()
     self:unregisterActionEvents()
     
     -- Restore original camera
-    if self.originalCamera ~= nil then
-        g_cameraManager:setActiveCamera(self.originalCamera)
-        self.originalCamera = nil
+    if self.originalCameraNode ~= nil then
+        g_cameraManager:setActiveCamera(self.originalCameraNode)
+        self.originalCameraNode = nil
     end
     
     self.isActive = false
