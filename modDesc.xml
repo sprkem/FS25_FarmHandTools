@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="106">
+    <author>YourName</author>
+    <version>1.0.0.0</version>
+    <iconFilename>icon_FieldGulls.dds</iconFilename>
+    <title>
+        <en>Farm Hand Tools</en>
+    </title>
+    <description>
+        <en><![CDATA[Farm Hand Tools - Free Camera Mode
+
+Press Right Ctrl+P to detach the camera from first person view and enter free-flying camera mode.
+
+Controls in Free Camera Mode:
+- WASD: Move horizontally
+- Q/E: Move up/down
+- Mouse: Look around
+- Right Ctrl+P: Return to normal camera
+
+Perfect for screenshots, exploring the map, or planning your farm layout from a bird's eye view.
+]]>
+        </en>
+    </description>
+    
+    <extraSourceFiles>
+        <sourceFile filename="src/FreeCamera.lua"/>
+        <sourceFile filename="src/main.lua"/>
+    </extraSourceFiles>
+    
+    <multiplayer supported="true"/>
+    
+    <actions>
+        <action name="FREE_CAMERA_TOGGLE" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_UP" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+    </actions>
+
+    <inputBinding>
+        <actionBinding action="FREE_CAMERA_TOGGLE">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_rctrl KEY_p" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_UP">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_q" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_DOWN">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_e" />
+        </actionBinding>
+    </inputBinding>
+</modDesc>
