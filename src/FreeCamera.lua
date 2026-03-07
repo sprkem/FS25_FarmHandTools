@@ -27,9 +27,6 @@ function FreeCamera.new()
     self.downInput = 0
     self.upEventId = nil
     self.downEventId = nil
-    
-    -- Track blocked action categories to restore later
-    self.blockedActionEvents = {}
 
     return self
 end
@@ -100,31 +97,6 @@ function FreeCamera:activate()
     g_cameraManager:setActiveCamera(self.camera)
     self.isActive = true
 
-    -- Disable player physics and lock input so they don't move/rotate
-    if g_currentMission.player ~= nil then
-        local player = g_currentMission.player
-        
-        -- Stop any current player movement
-        if player.mover then
-            player.mover:disablePhysics()
-            player.mover:setVelocity(0, 0, 0)
-            player.mover:setForce(0, 0, 0)
-        end
-        
-        -- Lock player input to prevent movement and rotation
-        if player.inputComponent ~= nil then
-            -- Clear any pending input state
-            player.inputComponent.moveForward = 0
-            player.inputComponent.moveRight = 0
-            player.inputComponent.walkAxis = 0
-            player.inputComponent.runAxis = 0
-            player.inputComponent.cameraRotationX = 0
-            player.inputComponent.cameraRotationY = 0
-            
-            player.inputComponent:lock()
-        end
-    end
-
     -- Register action events for vertical movement
     self:registerActionEvents()
 
@@ -140,9 +112,6 @@ function FreeCamera:registerActionEvents()
     _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_DOWN, self, self.onInputDown, false, false,
         true, true)
     self.downEventId = eventId
-    
-    -- Block player action events that would interfere
-    self:blockPlayerActions()
 end
 
 function FreeCamera:unregisterActionEvents()
@@ -154,9 +123,6 @@ function FreeCamera:unregisterActionEvents()
         g_inputBinding:removeActionEvent(self.downEventId)
         self.downEventId = nil
     end
-    
-    -- Restore blocked player actions
-    self:unblockPlayerActions()
 end
 
 function FreeCamera:onInputUp(actionName, inputValue, callbackState, isAnalog)
@@ -165,37 +131,6 @@ end
 
 function FreeCamera:onInputDown(actionName, inputValue, callbackState, isAnalog)
     self.downInput = inputValue
-end
-
--- Block player action events when camera is active
-function FreeCamera:blockPlayerActions()
-    -- Get all registered action events and disable non-camera ones
-    local actionEvents = g_inputBinding.actionEvents
-    if actionEvents then
-        for _, actionEvent in pairs(actionEvents) do
-            -- Don't block our own camera actions
-            if actionEvent.actionName and 
-               not string.find(actionEvent.actionName, "FREE_CAMERA") and
-               not string.find(actionEvent.actionName, "CAMERA_") and
-               not string.find(actionEvent.actionName, "MENU") then
-                -- Store original state and disable
-                if actionEvent.enabled then
-                    table.insert(self.blockedActionEvents, actionEvent)
-                    g_inputBinding:setActionEventActive(actionEvent.id, false)
-                end
-            end
-        end
-    end
-    print(string.format("[Free Camera] Blocked %d action events", #self.blockedActionEvents))
-end
-
--- Restore blocked player actions when camera deactivates
-function FreeCamera:unblockPlayerActions()
-    for _, actionEvent in ipairs(self.blockedActionEvents) do
-        g_inputBinding:setActionEventActive(actionEvent.id, true)
-    end
-    print(string.format("[Free Camera] Restored %d action events", #self.blockedActionEvents))
-    self.blockedActionEvents = {}
 end
 
 function FreeCamera:deactivate()
@@ -213,16 +148,6 @@ function FreeCamera:deactivate()
     end
 
     self.isActive = false
-
-    -- Re-enable player physics and unlock input
-    if g_currentMission.player ~= nil then
-        g_currentMission.player.mover:enablePhysics()
-        
-        -- Unlock player input to allow movement and rotation again
-        if g_currentMission.player.inputComponent ~= nil then
-            g_currentMission.player.inputComponent:unlock()
-        end
-    end
 
     print("Free Camera: DEACTIVATED")
 end

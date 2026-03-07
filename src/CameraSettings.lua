@@ -114,7 +114,6 @@ function CameraSettings.readSettings()
     local userSettingsFile = Utils.getFilename("modSettings/FarmHandTools.xml", getUserProfileAppPath())
     
     if not fileExists(userSettingsFile) then
-        print("[FarmHandTools] Creating user settings file: " .. userSettingsFile)
         CameraSettings.writeSettings()
         return
     end

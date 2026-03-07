@@ -28,17 +28,17 @@ function FarmHandTools.toggleFreeCamera()
 end
 
 function FarmHandTools.onSpeedUp()
-    if g_currentMission.FarmHandTools ~= nil and 
-       g_currentMission.FarmHandTools.freeCamera ~= nil and
-       g_currentMission.FarmHandTools.freeCamera.isActive then
+    if g_currentMission.FarmHandTools ~= nil and
+        g_currentMission.FarmHandTools.freeCamera ~= nil and
+        g_currentMission.FarmHandTools.freeCamera.isActive then
         CameraSettings.adjustSpeed(1)
     end
 end
 
 function FarmHandTools.onSpeedDown()
-    if g_currentMission.FarmHandTools ~= nil and 
-       g_currentMission.FarmHandTools.freeCamera ~= nil and
-       g_currentMission.FarmHandTools.freeCamera.isActive then
+    if g_currentMission.FarmHandTools ~= nil and
+        g_currentMission.FarmHandTools.freeCamera ~= nil and
+        g_currentMission.FarmHandTools.freeCamera.isActive then
         CameraSettings.adjustSpeed(-1)
     end
 end
@@ -49,10 +49,9 @@ local function playerInputComponentUpdate(self, superFunc, dt)
     if g_currentMission.FarmHandTools ~= nil and
         g_currentMission.FarmHandTools.freeCamera ~= nil and
         g_currentMission.FarmHandTools.freeCamera.isActive then
-        
         -- Update free camera with our input component BEFORE clearing values
         g_currentMission.FarmHandTools.freeCamera:update(dt, self)
-        
+
         -- Then clear all input values to prevent any player movement
         self.moveForward = 0
         self.moveRight = 0
@@ -64,6 +63,17 @@ local function playerInputComponentUpdate(self, superFunc, dt)
         -- Call original update when free camera is not active
         superFunc(self, dt)
     end
+end
+
+-- Block vehicle switching when free camera is active
+local function onInputSwitchVehicle(self, superFunc, actionName, inputValue, callbackState, isAnalog, isMouse,
+                                    deviceCategory, binding)
+    if g_currentMission.FarmHandTools ~= nil and
+        g_currentMission.FarmHandTools.freeCamera ~= nil and
+        g_currentMission.FarmHandTools.freeCamera.isActive then
+        return
+    end
+    return superFunc(self, actionName, inputValue, callbackState, isAnalog, isMouse, deviceCategory, binding)
 end
 
 -- Hook into player action events to register our keybinds
@@ -80,7 +90,7 @@ local function addPlayerActionEvents(self, superFunc, ...)
         true   -- startActive
     )
     g_inputBinding:setActionEventTextVisibility(id, false)
-    
+
     -- Register speed controls globally
     _, id = g_inputBinding:registerActionEvent(
         InputAction.FREE_CAMERA_SPEED_UP,
@@ -92,7 +102,7 @@ local function addPlayerActionEvents(self, superFunc, ...)
         true
     )
     g_inputBinding:setActionEventTextVisibility(id, false)
-    
+
     _, id = g_inputBinding:registerActionEvent(
         InputAction.FREE_CAMERA_SPEED_DOWN,
         self,
@@ -109,6 +119,11 @@ end
 PlayerInputComponent.update = Utils.overwrittenFunction(
     PlayerInputComponent.update,
     playerInputComponentUpdate
+)
+
+PlayerInputComponent.onInputSwitchVehicle = Utils.overwrittenFunction(
+    PlayerInputComponent.onInputSwitchVehicle,
+    onInputSwitchVehicle
 )
 
 PlayerInputComponent.registerGlobalPlayerActionEvents = Utils.overwrittenFunction(
