@@ -8,6 +8,7 @@
 		<text name="input_FREE_CAMERA_DOWN" text="Free Camera Down"/>
 		<text name="input_FREE_CAMERA_SPEED_UP" text="Free Camera Speed Up"/>
 		<text name="input_FREE_CAMERA_SPEED_DOWN" text="Free Camera Speed Down"/>
+		<text name="input_FREE_CAMERA_ZOOM" text="Free Camera Zoom In"/>
 		<text name="input_FREE_CAMERA_PRESET_1" text="Free Camera Speed Preset 1"/>
 		<text name="input_FREE_CAMERA_PRESET_2" text="Free Camera Speed Preset 2"/>
 		<text name="input_FREE_CAMERA_PRESET_3" text="Free Camera Speed Preset 3"/>
@@ -23,6 +24,10 @@
 		<!-- Sprint Multiplier Setting -->
 		<text name="setting_camera_cameraSprintMultiplier" text="Sprint Multiplier"/>
 		<text name="setting_camera_cameraSprintMultiplier_tooltip" text="Speed multiplier when holding Shift while moving the free camera"/>
+		
+		<!-- Zoom Setting -->
+		<text name="setting_camera_cameraZoomMultiplier" text="Zoom Level"/>
+		<text name="setting_camera_cameraZoomMultiplier_tooltip" text="Zoom magnification level (2x = half FOV, 3x = third FOV, etc.)"/>
 		
 		<!-- Speed Preset Settings -->
 		<text name="setting_camera_cameraSpeedPreset1" text="Speed Preset 1"/>

@@ -9,6 +9,7 @@ CameraSettings.CONTROLS = {}
 CameraSettings.menuItems = {
     'cameraMoveSpeed',
     'cameraSprintMultiplier',
+    'cameraZoomMultiplier',
     'cameraSpeedPreset1',
     'cameraSpeedPreset2',
     'cameraSpeedPreset3',
@@ -21,6 +22,9 @@ local SPEED_STRINGS = { "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", 
 
 local SPRINT_VALUES = { 2, 3, 4, 5, 6, 7, 8, 9, 10 }
 local SPRINT_STRINGS = { "2x", "3x", "4x", "5x", "6x", "7x", "8x", "9x", "10x" }
+
+local ZOOM_VALUES = { 2, 3, 4, 5, 6, 7, 8 }
+local ZOOM_STRINGS = { "2x", "3x", "4x", "5x", "6x", "7x", "8x" }
 
 -- SETTINGS DEFINITIONS
 CameraSettings.SETTINGS = {}
@@ -37,6 +41,13 @@ CameraSettings.SETTINGS.cameraSprintMultiplier = {
     ['serverOnly'] = false,
     ['values'] = SPRINT_VALUES,
     ['strings'] = SPRINT_STRINGS
+}
+
+CameraSettings.SETTINGS.cameraZoomMultiplier = {
+    ['default'] = 3,
+    ['serverOnly'] = false,
+    ['values'] = ZOOM_VALUES,
+    ['strings'] = ZOOM_STRINGS
 }
 
 CameraSettings.SETTINGS.cameraSpeedPreset1 = {
@@ -71,6 +82,7 @@ CameraSettings.SETTINGS.cameraSpeedPreset4 = {
 CameraSettings.settings = {
     cameraMoveSpeed = 8,
     cameraSprintMultiplier = 3,
+    cameraZoomMultiplier = 3,
     cameraSpeedPreset1 = 0.5,
     cameraSpeedPreset2 = 1,
     cameraSpeedPreset3 = 10,

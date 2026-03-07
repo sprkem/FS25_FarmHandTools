@@ -6,6 +6,8 @@ local FreeCamera_mt = Class(FreeCamera)
 FreeCamera.BASE_MOVE_SPEED = 8 -- meters per second (default, overridden by settings)
 FreeCamera.SPRINT_MULTIPLIER = 3.0 -- (default, overridden by settings)
 FreeCamera.SLOW_MULTIPLIER = 0.3
+FreeCamera.BASE_FOV = 60 -- degrees
+FreeCamera.DEFAULT_ZOOM_MULTIPLIER = 3
 
 function FreeCamera.new()
     local self = setmetatable({}, FreeCamera_mt)
@@ -28,6 +30,12 @@ function FreeCamera.new()
     self.upEventId = nil
     self.downEventId = nil
 
+    -- Zoom state
+    self.isZoomed = false
+    self.baseFOV = math.rad(FreeCamera.BASE_FOV)
+    self.zoomInput = 0
+    self.zoomEventId = nil
+
     return self
 end
 
@@ -49,8 +57,9 @@ function FreeCamera:initialize()
     self.cameraNode = createTransformGroup("freeCameraNode")
     link(getRootNode(), self.cameraNode)
 
-    -- Create the actual camera
-    self.camera = createCamera("freeCamera", math.rad(60), 0.15, 6000)
+    -- Create the actual camera with base FOV
+    self.baseFOV = math.rad(FreeCamera.BASE_FOV)
+    self.camera = createCamera("freeCamera", self.baseFOV, 0.15, 6000)
     link(self.cameraNode, self.camera)
 
     -- Register with camera manager
@@ -112,6 +121,11 @@ function FreeCamera:registerActionEvents()
     _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_DOWN, self, self.onInputDown, false, false,
         true, true)
     self.downEventId = eventId
+
+    -- Register zoom action
+    _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_ZOOM, self, self.onInputZoom, false, false,
+        true, true)
+    self.zoomEventId = eventId
 end
 
 function FreeCamera:unregisterActionEvents()
@@ -123,6 +137,10 @@ function FreeCamera:unregisterActionEvents()
         g_inputBinding:removeActionEvent(self.downEventId)
         self.downEventId = nil
     end
+    if self.zoomEventId ~= nil then
+        g_inputBinding:removeActionEvent(self.zoomEventId)
+        self.zoomEventId = nil
+    end
 end
 
 function FreeCamera:onInputUp(actionName, inputValue, callbackState, isAnalog)
@@ -133,6 +151,33 @@ function FreeCamera:onInputDown(actionName, inputValue, callbackState, isAnalog)
     self.downInput = inputValue
 end
 
+function FreeCamera:onInputZoom(actionName, inputValue, callbackState, isAnalog)
+    self.zoomInput = inputValue
+    self:updateZoom()
+end
+
+function FreeCamera:updateZoom()
+    if self.camera == nil then
+        return
+    end
+
+    local isZooming = self.zoomInput > 0.5
+    
+    if isZooming ~= self.isZoomed then
+        self.isZoomed = isZooming
+        
+        if self.isZoomed then
+            -- Zoom in: divide FOV by zoom multiplier
+            local zoomMultiplier = CameraSettings and CameraSettings.settings.cameraZoomMultiplier or FreeCamera.DEFAULT_ZOOM_MULTIPLIER
+            local zoomedFOV = self.baseFOV / zoomMultiplier
+            setFovY(self.camera, zoomedFOV)
+        else
+            -- Zoom out: restore base FOV
+            setFovY(self.camera, self.baseFOV)
+        end
+    end
+end
+
 function FreeCamera:deactivate()
     if not self.isActive then
         return
@@ -140,6 +185,13 @@ function FreeCamera:deactivate()
 
     -- Unregister action events
     self:unregisterActionEvents()
+
+    -- Reset zoom state
+    self.isZoomed = false
+    self.zoomInput = 0
+    if self.camera ~= nil then
+        setFovY(self.camera, self.baseFOV)
+    end
 
     -- Restore original camera
     if self.originalCameraNode ~= nil then
