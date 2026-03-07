@@ -27,6 +27,9 @@ function FreeCamera.new()
     self.downInput = 0
     self.upEventId = nil
     self.downEventId = nil
+    
+    -- Track blocked action categories to restore later
+    self.blockedActionEvents = {}
 
     return self
 end
@@ -137,6 +140,9 @@ function FreeCamera:registerActionEvents()
     _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_DOWN, self, self.onInputDown, false, false,
         true, true)
     self.downEventId = eventId
+    
+    -- Block player action events that would interfere
+    self:blockPlayerActions()
 end
 
 function FreeCamera:unregisterActionEvents()
@@ -148,6 +154,9 @@ function FreeCamera:unregisterActionEvents()
         g_inputBinding:removeActionEvent(self.downEventId)
         self.downEventId = nil
     end
+    
+    -- Restore blocked player actions
+    self:unblockPlayerActions()
 end
 
 function FreeCamera:onInputUp(actionName, inputValue, callbackState, isAnalog)
@@ -156,6 +165,37 @@ end
 
 function FreeCamera:onInputDown(actionName, inputValue, callbackState, isAnalog)
     self.downInput = inputValue
+end
+
+-- Block player action events when camera is active
+function FreeCamera:blockPlayerActions()
+    -- Get all registered action events and disable non-camera ones
+    local actionEvents = g_inputBinding.actionEvents
+    if actionEvents then
+        for _, actionEvent in pairs(actionEvents) do
+            -- Don't block our own camera actions
+            if actionEvent.actionName and 
+               not string.find(actionEvent.actionName, "FREE_CAMERA") and
+               not string.find(actionEvent.actionName, "CAMERA_") and
+               not string.find(actionEvent.actionName, "MENU") then
+                -- Store original state and disable
+                if actionEvent.enabled then
+                    table.insert(self.blockedActionEvents, actionEvent)
+                    g_inputBinding:setActionEventActive(actionEvent.id, false)
+                end
+            end
+        end
+    end
+    print(string.format("[Free Camera] Blocked %d action events", #self.blockedActionEvents))
+end
+
+-- Restore blocked player actions when camera deactivates
+function FreeCamera:unblockPlayerActions()
+    for _, actionEvent in ipairs(self.blockedActionEvents) do
+        g_inputBinding:setActionEventActive(actionEvent.id, true)
+    end
+    print(string.format("[Free Camera] Restored %d action events", #self.blockedActionEvents))
+    self.blockedActionEvents = {}
 end
 
 function FreeCamera:deactivate()
