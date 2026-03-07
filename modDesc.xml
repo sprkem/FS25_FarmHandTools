@@ -13,8 +13,9 @@ Press Right Ctrl+P to detach the camera from first person view and enter free-fl
 
 Controls in Free Camera Mode:
 - WASD: Move horizontally
-- Q/E: Move up/down
-- Mouse: Look around
+- Q/E or RB/LB (controller): Move up/down
+- +/- or D-Pad Up/Down (controller): Adjust camera speed
+- Mouse or Right Stick: Look around
 - Right Ctrl+P: Return to normal camera
 
 Perfect for screenshots, exploring the map, or planning your farm layout from a bird's eye view.
@@ -52,6 +53,8 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         <action name="FREE_CAMERA_TOGGLE" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_UP" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_SPEED_UP" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_SPEED_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
     </actions>
 
     <inputBinding>
@@ -60,9 +63,19 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         </actionBinding>
         <actionBinding action="FREE_CAMERA_UP">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_q" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_6" />
         </actionBinding>
         <actionBinding action="FREE_CAMERA_DOWN">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_e" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_5" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_SPEED_UP">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_equals" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_17" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_SPEED_DOWN">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_minus" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_19" />
         </actionBinding>
     </inputBinding>
 </modDesc>

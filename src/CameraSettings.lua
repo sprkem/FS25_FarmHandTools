@@ -17,8 +17,8 @@ CameraSettings.SETTINGS = {}
 CameraSettings.SETTINGS.cameraMoveSpeed = {
     ['default'] = 8,
     ['serverOnly'] = false,
-    ['values'] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20 },
-    ['strings'] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "14", "16", "18", "20" }
+    ['values'] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20 },
+    ['strings'] = { "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "14", "16", "18", "20" }
 }
 
 CameraSettings.SETTINGS.cameraSprintMultiplier = {
@@ -33,6 +33,27 @@ CameraSettings.settings = {
     cameraMoveSpeed = 8,
     cameraSprintMultiplier = 3
 }
+
+-- Helper function to get next/previous speed value
+function CameraSettings.adjustSpeed(direction)
+    local currentSpeed = CameraSettings.settings.cameraMoveSpeed
+    local values = CameraSettings.SETTINGS.cameraMoveSpeed.values
+    local currentIndex = CameraSettings.getStateIndex('cameraMoveSpeed', currentSpeed)
+    
+    local newIndex = currentIndex + direction
+    newIndex = math.max(1, math.min(#values, newIndex))
+    
+    if newIndex ~= currentIndex then
+        CameraSettings.settings.cameraMoveSpeed = values[newIndex]
+        CameraSettings.writeSettings()
+        print(string.format("[Free Camera] Speed: %.1f m/s", CameraSettings.settings.cameraMoveSpeed))
+        
+        -- Update menu control if it exists
+        if CameraSettings.CONTROLS['cameraMoveSpeed'] then
+            CameraSettings.CONTROLS['cameraMoveSpeed']:setState(newIndex)
+        end
+    end
+end
 
 function CameraSettings.getStateIndex(id, value)
     local value = value or CameraSettings.settings[id]

@@ -22,7 +22,7 @@ function FreeCamera.new()
     self.rotX = 0 -- pitch
     self.rotY = 0 -- yaw
 
-    -- Input tracking for Q/E keys
+    -- Input tracking for vertical movement
     self.upInput = 0
     self.downInput = 0
     self.upEventId = nil
@@ -122,18 +122,18 @@ function FreeCamera:activate()
         end
     end
 
-    -- Register action events for Q/E
+    -- Register action events for vertical movement
     self:registerActionEvents()
 
-    print("Free Camera: ACTIVATED - Use WASD to move, Q/E for up/down, Mouse to look")
+    print("Free Camera: ACTIVATED - WASD: move, Q/E: up/down, +/-: speed, Mouse: look")
 end
 
 function FreeCamera:registerActionEvents()
-    -- Register Q/E for vertical movement
+    -- Register separate UP and DOWN actions (supports both keyboard and controller)
     local _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_UP, self, self.onInputUp, false, false,
         true, true)
     self.upEventId = eventId
-
+    
     _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_DOWN, self, self.onInputDown, false, false,
         true, true)
     self.downEventId = eventId
@@ -256,9 +256,8 @@ function FreeCamera:update(dt, inputComponent)
     self.posX = self.posX + moveX * moveSpeed * dtSeconds
     self.posZ = self.posZ + moveZ * moveSpeed * dtSeconds
 
-    -- Vertical movement using Q/E keys
+    -- Vertical movement using separate up/down inputs
     local verticalAxis = self.upInput - self.downInput
-
     self.posY = self.posY + verticalAxis * moveSpeed * dtSeconds
 
     -- Clamp Y position to reasonable values

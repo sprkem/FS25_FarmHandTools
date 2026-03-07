@@ -27,6 +27,22 @@ function FarmHandTools.toggleFreeCamera()
     end
 end
 
+function FarmHandTools.onSpeedUp()
+    if g_currentMission.FarmHandTools ~= nil and 
+       g_currentMission.FarmHandTools.freeCamera ~= nil and
+       g_currentMission.FarmHandTools.freeCamera.isActive then
+        CameraSettings.adjustSpeed(1)
+    end
+end
+
+function FarmHandTools.onSpeedDown()
+    if g_currentMission.FarmHandTools ~= nil and 
+       g_currentMission.FarmHandTools.freeCamera ~= nil and
+       g_currentMission.FarmHandTools.freeCamera.isActive then
+        CameraSettings.adjustSpeed(-1)
+    end
+end
+
 -- Hook into PlayerInputComponent:update to feed inputs to free camera
 local function playerInputComponentUpdate(self, superFunc, dt)
     -- If free camera is active, skip normal player input processing
@@ -50,7 +66,7 @@ local function playerInputComponentUpdate(self, superFunc, dt)
     end
 end
 
--- Hook into player action events to register our keybind
+-- Hook into player action events to register our keybinds
 local function addPlayerActionEvents(self, superFunc, ...)
     superFunc(self, ...)
 
@@ -63,8 +79,29 @@ local function addPlayerActionEvents(self, superFunc, ...)
         false, -- triggerAlways
         true   -- startActive
     )
-
-    -- Hide the action text from screen
+    g_inputBinding:setActionEventTextVisibility(id, false)
+    
+    -- Register speed controls globally
+    _, id = g_inputBinding:registerActionEvent(
+        InputAction.FREE_CAMERA_SPEED_UP,
+        self,
+        FarmHandTools.onSpeedUp,
+        false,
+        true,
+        false,
+        true
+    )
+    g_inputBinding:setActionEventTextVisibility(id, false)
+    
+    _, id = g_inputBinding:registerActionEvent(
+        InputAction.FREE_CAMERA_SPEED_DOWN,
+        self,
+        FarmHandTools.onSpeedDown,
+        false,
+        true,
+        false,
+        true
+    )
     g_inputBinding:setActionEventTextVisibility(id, false)
 end
 

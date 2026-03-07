@@ -2,6 +2,13 @@
 <l10n>
 	<translationContributors/>
 	<texts>
+		<!-- Input Actions -->
+		<text name="input_FREE_CAMERA_TOGGLE" text="Toggle Free Camera"/>
+		<text name="input_FREE_CAMERA_UP" text="Free Camera Up"/>
+		<text name="input_FREE_CAMERA_DOWN" text="Free Camera Down"/>
+		<text name="input_FREE_CAMERA_SPEED_UP" text="Free Camera Speed Up"/>
+		<text name="input_FREE_CAMERA_SPEED_DOWN" text="Free Camera Speed Down"/>
+		
 		<!-- Settings Section -->
 		<text name="setting_camera_section" text="Free Camera Settings"/>
 		
