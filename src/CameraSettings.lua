@@ -10,6 +10,7 @@ CameraSettings.menuItems = {
     'cameraMoveSpeed',
     'cameraSprintMultiplier',
     'cameraZoomMultiplier',
+    'cameraLeanAngle',
     'cameraSpeedPreset1',
     'cameraSpeedPreset2',
     'cameraSpeedPreset3',
@@ -25,6 +26,9 @@ local SPRINT_STRINGS = { "2x", "3x", "4x", "5x", "6x", "7x", "8x", "9x", "10x" }
 
 local ZOOM_VALUES = { 2, 3, 4, 5, 6, 7, 8 }
 local ZOOM_STRINGS = { "2x", "3x", "4x", "5x", "6x", "7x", "8x" }
+
+local LEAN_VALUES = { 5, 10, 15, 20, 25, 30, 35, 40, 45 }
+local LEAN_STRINGS = { "5°", "10°", "15°", "20°", "25°", "30°", "35°", "40°", "45°" }
 
 -- SETTINGS DEFINITIONS
 CameraSettings.SETTINGS = {}
@@ -48,6 +52,13 @@ CameraSettings.SETTINGS.cameraZoomMultiplier = {
     ['serverOnly'] = false,
     ['values'] = ZOOM_VALUES,
     ['strings'] = ZOOM_STRINGS
+}
+
+CameraSettings.SETTINGS.cameraLeanAngle = {
+    ['default'] = 20,
+    ['serverOnly'] = false,
+    ['values'] = LEAN_VALUES,
+    ['strings'] = LEAN_STRINGS
 }
 
 CameraSettings.SETTINGS.cameraSpeedPreset1 = {
@@ -83,6 +94,7 @@ CameraSettings.settings = {
     cameraMoveSpeed = 8,
     cameraSprintMultiplier = 3,
     cameraZoomMultiplier = 3,
+    cameraLeanAngle = 20,
     cameraSpeedPreset1 = 0.5,
     cameraSpeedPreset2 = 1,
     cameraSpeedPreset3 = 10,

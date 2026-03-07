@@ -8,6 +8,9 @@ FreeCamera.SPRINT_MULTIPLIER = 3.0 -- (default, overridden by settings)
 FreeCamera.SLOW_MULTIPLIER = 0.3
 FreeCamera.BASE_FOV = 60 -- degrees
 FreeCamera.DEFAULT_ZOOM_MULTIPLIER = 3
+FreeCamera.DEFAULT_LEAN_ANGLE = 20 -- degrees
+FreeCamera.LEAN_SPEED = 3.0 -- time factor for lerping (higher = faster)
+FreeCamera.LEAN_OFFSET_MULTIPLIER = 0.8 -- how much to offset position when leaning
 
 function FreeCamera.new()
     local self = setmetatable({}, FreeCamera_mt)
@@ -35,6 +38,14 @@ function FreeCamera.new()
     self.baseFOV = math.rad(FreeCamera.BASE_FOV)
     self.zoomInput = 0
     self.zoomEventId = nil
+
+    -- Lean state
+    self.currentLeanRoll = 0
+    self.targetLeanRoll = 0
+    self.leanLeftInput = 0
+    self.leanRightInput = 0
+    self.leanLeftEventId = nil
+    self.leanRightEventId = nil
 
     return self
 end
@@ -126,6 +137,15 @@ function FreeCamera:registerActionEvents()
     _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_ZOOM, self, self.onInputZoom, false, false,
         true, true)
     self.zoomEventId = eventId
+
+    -- Register lean actions (same parameters as UP/DOWN which work correctly)
+    _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_LEAN_LEFT, self, self.onInputLeanLeft, false, false,
+        true, true)
+    self.leanLeftEventId = eventId
+
+    _, eventId = g_inputBinding:registerActionEvent(InputAction.FREE_CAMERA_LEAN_RIGHT, self, self.onInputLeanRight, false, false,
+        true, true)
+    self.leanRightEventId = eventId
 end
 
 function FreeCamera:unregisterActionEvents()
@@ -141,6 +161,14 @@ function FreeCamera:unregisterActionEvents()
         g_inputBinding:removeActionEvent(self.zoomEventId)
         self.zoomEventId = nil
     end
+    if self.leanLeftEventId ~= nil then
+        g_inputBinding:removeActionEvent(self.leanLeftEventId)
+        self.leanLeftEventId = nil
+    end
+    if self.leanRightEventId ~= nil then
+        g_inputBinding:removeActionEvent(self.leanRightEventId)
+        self.leanRightEventId = nil
+    end
 end
 
 function FreeCamera:onInputUp(actionName, inputValue, callbackState, isAnalog)
@@ -154,6 +182,20 @@ end
 function FreeCamera:onInputZoom(actionName, inputValue, callbackState, isAnalog)
     self.zoomInput = inputValue
     self:updateZoom()
+end
+
+function FreeCamera:onInputLeanLeft(actionName, inputValue, callbackState, isAnalog)
+    self.leanLeftInput = inputValue or 0
+    if self.leanLeftInput < 0.01 then
+        self.leanLeftInput = 0
+    end
+end
+
+function FreeCamera:onInputLeanRight(actionName, inputValue, callbackState, isAnalog)
+    self.leanRightInput = inputValue or 0
+    if self.leanRightInput < 0.01 then
+        self.leanRightInput = 0
+    end
 end
 
 function FreeCamera:updateZoom()
@@ -178,6 +220,30 @@ function FreeCamera:updateZoom()
     end
 end
 
+function FreeCamera:updateLean()
+    -- Calculate target lean based on input
+    local leanAngle = CameraSettings and CameraSettings.settings.cameraLeanAngle or FreeCamera.DEFAULT_LEAN_ANGLE
+    local leanAngleRad = math.rad(leanAngle)
+    
+    -- Clean up input values below threshold
+    local leftInput = (self.leanLeftInput or 0)
+    local rightInput = (self.leanRightInput or 0)
+    
+    -- Force values below threshold to 0
+    if leftInput < 0.01 then leftInput = 0 end
+    if rightInput < 0.01 then rightInput = 0 end
+    
+    -- Calculate target based on current input state
+    if leftInput > 0 then
+        self.targetLeanRoll = leanAngleRad  -- Positive for left lean
+    elseif rightInput > 0 then
+        self.targetLeanRoll = -leanAngleRad   -- Negative for right lean
+    else
+        -- No lean input, return to neutral
+        self.targetLeanRoll = 0
+    end
+end
+
 function FreeCamera:deactivate()
     if not self.isActive then
         return
@@ -192,6 +258,12 @@ function FreeCamera:deactivate()
     if self.camera ~= nil then
         setFovY(self.camera, self.baseFOV)
     end
+
+    -- Reset lean state
+    self.currentLeanRoll = 0
+    self.targetLeanRoll = 0
+    self.leanLeftInput = 0
+    self.leanRightInput = 0
 
     -- Restore original camera
     if self.originalCameraNode ~= nil then
@@ -217,11 +289,29 @@ function FreeCamera:updateTransform()
         return
     end
 
-    -- Set position
-    setTranslation(self.cameraNode, self.posX, self.posY, self.posZ)
+    -- Calculate lean offset (arc to side and lower)
+    local leanPercent = self.currentLeanRoll / math.rad(45)  -- Normalize to -1 to 1
+    local offsetMultiplier = FreeCamera.LEAN_OFFSET_MULTIPLIER
+    
+    -- Right vector for lateral offset
+    local rightX = math.cos(self.rotY)
+    local rightZ = -math.sin(self.rotY)
+    
+    -- Apply lateral offset (invert direction: positive lean = left, negative lean = right)
+    local leanOffsetX = -rightX * leanPercent * offsetMultiplier
+    local leanOffsetZ = -rightZ * leanPercent * offsetMultiplier
+    
+    -- Apply vertical offset (lower when leaning)
+    local leanOffsetY = -math.abs(leanPercent) * offsetMultiplier * 0.3
 
-    -- Set rotation (pitch, yaw, roll)
-    setRotation(self.cameraNode, self.rotX, self.rotY, 0)
+    -- Set position with lean offset
+    setTranslation(self.cameraNode, 
+        self.posX + leanOffsetX, 
+        self.posY + leanOffsetY, 
+        self.posZ + leanOffsetZ)
+
+    -- Set rotation (pitch, yaw, roll with lean)
+    setRotation(self.cameraNode, self.rotX, self.rotY, self.currentLeanRoll)
 end
 
 function FreeCamera:update(dt, inputComponent)
@@ -281,6 +371,13 @@ function FreeCamera:update(dt, inputComponent)
     local terrainHeight = getTerrainHeightAtWorldPos(g_terrainNode, self.posX, self.posY, self.posZ)
     self.posY = math.max(terrainHeight + 0.5, self.posY)
     self.posY = math.min(1000, self.posY) -- Max altitude
+
+    -- Update lean target based on current input state (recalculate every frame)
+    self:updateLean()
+
+    -- Smoothly interpolate lean roll
+    local lerpFactor = 1 - math.pow(0.5, dtSeconds * FreeCamera.LEAN_SPEED)
+    self.currentLeanRoll = self.currentLeanRoll + (self.targetLeanRoll - self.currentLeanRoll) * lerpFactor
 
     -- Update the camera transform
     self:updateTransform()

@@ -17,10 +17,11 @@ Controls in Free Camera Mode:
 - +/- or D-Pad Up/Down (controller): Adjust camera speed
 - 1-4 or XYAB (controller): Apply speed presets
 - X or LS Click (controller): Zoom in
+- [ and ] or LT/RT (controller): Lean left/right
 - Mouse or Right Stick: Look around
 - Right Ctrl+P: Return to normal camera
 
-Configure your preferred speed presets and zoom level in the game settings menu.
+Configure your preferred speed presets, zoom level, and lean angle in the game settings menu.
 All player actions and vehicle switching are disabled while the camera is active.
 
 Perfect for screenshots, exploring the map, or planning your farm layout from a bird's eye view.
@@ -55,6 +56,12 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         </text>
         <text name="setting_camera_cameraZoomMultiplier_tooltip">
             <en>Zoom magnification level (2x = half FOV, 3x = third FOV, etc.)</en>
+        </text>
+        <text name="setting_camera_cameraLeanAngle">
+            <en>Lean Angle</en>
+        </text>
+        <text name="setting_camera_cameraLeanAngle_tooltip">
+            <en>Camera roll angle when leaning left or right</en>
         </text>
         <text name="setting_camera_cameraSpeedPreset1">
             <en>Speed Preset 1</en>
@@ -91,6 +98,8 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         <action name="FREE_CAMERA_SPEED_UP" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_SPEED_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_ZOOM" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_LEAN_LEFT" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_LEAN_RIGHT" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_PRESET_1" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_PRESET_2" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_PRESET_3" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
@@ -120,6 +129,14 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         <actionBinding action="FREE_CAMERA_ZOOM">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_x" />
             <binding device="GAMEPAD_DEFAULT" input="BUTTON_11" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_LEAN_LEFT">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lbracket" />
+            <binding device="GAMEPAD_DEFAULT" input="AXIS_LT" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_LEAN_RIGHT">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_rbracket" />
+            <binding device="GAMEPAD_DEFAULT" input="AXIS_RT" />
         </actionBinding>
         <actionBinding action="FREE_CAMERA_PRESET_1">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_1" />
