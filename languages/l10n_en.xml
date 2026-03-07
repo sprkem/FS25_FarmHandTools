@@ -30,6 +30,8 @@
 		<!-- Zoom Setting -->
 		<text name="setting_camera_cameraZoomMultiplier" text="Zoom Level"/>
 		<text name="setting_camera_cameraZoomMultiplier_tooltip" text="Zoom magnification level (2x = half FOV, 3x = third FOV, etc.)"/>
+		<text name="setting_camera_cameraZoomSpeed" text="Zoom Speed"/>
+		<text name="setting_camera_cameraZoomSpeed_tooltip" text="How fast the zoom transitions (Instant = immediate, Fast = quick, Slow = gradual)"/>
 		
 		<!-- Lean Setting -->
 		<text name="setting_camera_cameraLeanAngle" text="Lean Angle"/>

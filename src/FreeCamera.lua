@@ -36,6 +36,8 @@ function FreeCamera.new()
     -- Zoom state
     self.isZoomed = false
     self.baseFOV = math.rad(FreeCamera.BASE_FOV)
+    self.currentFOV = self.baseFOV
+    self.targetFOV = self.baseFOV
     self.zoomInput = 0
     self.zoomEventId = nil
 
@@ -70,6 +72,8 @@ function FreeCamera:initialize()
 
     -- Create the actual camera with base FOV
     self.baseFOV = math.rad(FreeCamera.BASE_FOV)
+    self.currentFOV = self.baseFOV
+    self.targetFOV = self.baseFOV
     self.camera = createCamera("freeCamera", self.baseFOV, 0.15, 6000)
     link(self.cameraNode, self.camera)
 
@@ -211,11 +215,10 @@ function FreeCamera:updateZoom()
         if self.isZoomed then
             -- Zoom in: divide FOV by zoom multiplier
             local zoomMultiplier = CameraSettings and CameraSettings.settings.cameraZoomMultiplier or FreeCamera.DEFAULT_ZOOM_MULTIPLIER
-            local zoomedFOV = self.baseFOV / zoomMultiplier
-            setFovY(self.camera, zoomedFOV)
+            self.targetFOV = self.baseFOV / zoomMultiplier
         else
             -- Zoom out: restore base FOV
-            setFovY(self.camera, self.baseFOV)
+            self.targetFOV = self.baseFOV
         end
     end
 end
@@ -255,6 +258,8 @@ function FreeCamera:deactivate()
     -- Reset zoom state
     self.isZoomed = false
     self.zoomInput = 0
+    self.targetFOV = self.baseFOV
+    self.currentFOV = self.baseFOV
     if self.camera ~= nil then
         setFovY(self.camera, self.baseFOV)
     end
@@ -378,6 +383,22 @@ function FreeCamera:update(dt, inputComponent)
     -- Smoothly interpolate lean roll
     local lerpFactor = 1 - math.pow(0.5, dtSeconds * FreeCamera.LEAN_SPEED)
     self.currentLeanRoll = self.currentLeanRoll + (self.targetLeanRoll - self.currentLeanRoll) * lerpFactor
+
+    -- Smoothly interpolate zoom FOV
+    local zoomSpeed = CameraSettings and CameraSettings.settings.cameraZoomSpeed or 5
+    if zoomSpeed == 0 then
+        -- Instant zoom
+        self.currentFOV = self.targetFOV
+    else
+        -- Smooth zoom
+        local zoomLerpFactor = 1 - math.pow(0.5, dtSeconds * zoomSpeed)
+        self.currentFOV = self.currentFOV + (self.targetFOV - self.currentFOV) * zoomLerpFactor
+    end
+    
+    -- Apply the current FOV to the camera
+    if self.camera ~= nil then
+        setFovY(self.camera, self.currentFOV)
+    end
 
     -- Update the camera transform
     self:updateTransform()
