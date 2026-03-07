@@ -43,6 +43,38 @@ function FarmHandTools.onSpeedDown()
     end
 end
 
+function FarmHandTools.onPreset1()
+    if g_currentMission.FarmHandTools ~= nil and
+        g_currentMission.FarmHandTools.freeCamera ~= nil and
+        g_currentMission.FarmHandTools.freeCamera.isActive then
+        CameraSettings.applyPreset(1)
+    end
+end
+
+function FarmHandTools.onPreset2()
+    if g_currentMission.FarmHandTools ~= nil and
+        g_currentMission.FarmHandTools.freeCamera ~= nil and
+        g_currentMission.FarmHandTools.freeCamera.isActive then
+        CameraSettings.applyPreset(2)
+    end
+end
+
+function FarmHandTools.onPreset3()
+    if g_currentMission.FarmHandTools ~= nil and
+        g_currentMission.FarmHandTools.freeCamera ~= nil and
+        g_currentMission.FarmHandTools.freeCamera.isActive then
+        CameraSettings.applyPreset(3)
+    end
+end
+
+function FarmHandTools.onPreset4()
+    if g_currentMission.FarmHandTools ~= nil and
+        g_currentMission.FarmHandTools.freeCamera ~= nil and
+        g_currentMission.FarmHandTools.freeCamera.isActive then
+        CameraSettings.applyPreset(4)
+    end
+end
+
 -- Hook into PlayerInputComponent:update to feed inputs to free camera
 local function playerInputComponentUpdate(self, superFunc, dt)
     -- If free camera is active, skip normal player input processing
@@ -107,6 +139,51 @@ local function addPlayerActionEvents(self, superFunc, ...)
         InputAction.FREE_CAMERA_SPEED_DOWN,
         self,
         FarmHandTools.onSpeedDown,
+        false,
+        true,
+        false,
+        true
+    )
+    g_inputBinding:setActionEventTextVisibility(id, false)
+
+    -- Register preset speed controls
+    _, id = g_inputBinding:registerActionEvent(
+        InputAction.FREE_CAMERA_PRESET_1,
+        self,
+        FarmHandTools.onPreset1,
+        false,
+        true,
+        false,
+        true
+    )
+    g_inputBinding:setActionEventTextVisibility(id, false)
+
+    _, id = g_inputBinding:registerActionEvent(
+        InputAction.FREE_CAMERA_PRESET_2,
+        self,
+        FarmHandTools.onPreset2,
+        false,
+        true,
+        false,
+        true
+    )
+    g_inputBinding:setActionEventTextVisibility(id, false)
+
+    _, id = g_inputBinding:registerActionEvent(
+        InputAction.FREE_CAMERA_PRESET_3,
+        self,
+        FarmHandTools.onPreset3,
+        false,
+        true,
+        false,
+        true
+    )
+    g_inputBinding:setActionEventTextVisibility(id, false)
+
+    _, id = g_inputBinding:registerActionEvent(
+        InputAction.FREE_CAMERA_PRESET_4,
+        self,
+        FarmHandTools.onPreset4,
         false,
         true,
         false,

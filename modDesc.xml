@@ -15,9 +15,11 @@ Controls in Free Camera Mode:
 - WASD: Move horizontally
 - Q/E or RB/LB (controller): Move up/down
 - +/- or D-Pad Up/Down (controller): Adjust camera speed
+- 1-4 or XYAB (controller): Apply speed presets
 - Mouse or Right Stick: Look around
 - Right Ctrl+P: Return to normal camera
 
+Configure your preferred speed presets in the game settings menu.
 All player actions and vehicle switching are disabled while the camera is active.
 
 Perfect for screenshots, exploring the map, or planning your farm layout from a bird's eye view.
@@ -47,6 +49,30 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         <text name="setting_camera_cameraSprintMultiplier_tooltip">
             <en>Speed multiplier when holding Shift while moving the free camera</en>
         </text>
+        <text name="setting_camera_cameraSpeedPreset1">
+            <en>Speed Preset 1</en>
+        </text>
+        <text name="setting_camera_cameraSpeedPreset1_tooltip">
+            <en>Speed preset activated by pressing 1 or A/X button on gamepad</en>
+        </text>
+        <text name="setting_camera_cameraSpeedPreset2">
+            <en>Speed Preset 2</en>
+        </text>
+        <text name="setting_camera_cameraSpeedPreset2_tooltip">
+            <en>Speed preset activated by pressing 2 or B/Circle button on gamepad</en>
+        </text>
+        <text name="setting_camera_cameraSpeedPreset3">
+            <en>Speed Preset 3</en>
+        </text>
+        <text name="setting_camera_cameraSpeedPreset3_tooltip">
+            <en>Speed preset activated by pressing 3 or X/Square button on gamepad</en>
+        </text>
+        <text name="setting_camera_cameraSpeedPreset4">
+            <en>Speed Preset 4</en>
+        </text>
+        <text name="setting_camera_cameraSpeedPreset4_tooltip">
+            <en>Speed preset activated by pressing 4 or Y/Triangle button on gamepad</en>
+        </text>
     </l10n>
     
     <multiplayer supported="true"/>
@@ -57,6 +83,10 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         <action name="FREE_CAMERA_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_SPEED_UP" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
         <action name="FREE_CAMERA_SPEED_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_PRESET_1" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_PRESET_2" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_PRESET_3" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FREE_CAMERA_PRESET_4" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
     </actions>
 
     <inputBinding>
@@ -78,6 +108,22 @@ Perfect for screenshots, exploring the map, or planning your farm layout from a 
         <actionBinding action="FREE_CAMERA_SPEED_DOWN">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_minus" />
             <binding device="GAMEPAD_DEFAULT" input="BUTTON_19" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_PRESET_1">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_1" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_1" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_PRESET_2">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_2" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_2" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_PRESET_3">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_3" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_3" />
+        </actionBinding>
+        <actionBinding action="FREE_CAMERA_PRESET_4">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_4" />
+            <binding device="GAMEPAD_DEFAULT" input="BUTTON_4" />
         </actionBinding>
     </inputBinding>
 </modDesc>

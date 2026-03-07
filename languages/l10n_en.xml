@@ -8,6 +8,10 @@
 		<text name="input_FREE_CAMERA_DOWN" text="Free Camera Down"/>
 		<text name="input_FREE_CAMERA_SPEED_UP" text="Free Camera Speed Up"/>
 		<text name="input_FREE_CAMERA_SPEED_DOWN" text="Free Camera Speed Down"/>
+		<text name="input_FREE_CAMERA_PRESET_1" text="Free Camera Speed Preset 1"/>
+		<text name="input_FREE_CAMERA_PRESET_2" text="Free Camera Speed Preset 2"/>
+		<text name="input_FREE_CAMERA_PRESET_3" text="Free Camera Speed Preset 3"/>
+		<text name="input_FREE_CAMERA_PRESET_4" text="Free Camera Speed Preset 4"/>
 		
 		<!-- Settings Section -->
 		<text name="setting_camera_section" text="Free Camera Settings"/>
@@ -19,5 +23,15 @@
 		<!-- Sprint Multiplier Setting -->
 		<text name="setting_camera_cameraSprintMultiplier" text="Sprint Multiplier"/>
 		<text name="setting_camera_cameraSprintMultiplier_tooltip" text="Speed multiplier when holding Shift while moving the free camera"/>
+		
+		<!-- Speed Preset Settings -->
+		<text name="setting_camera_cameraSpeedPreset1" text="Speed Preset 1"/>
+		<text name="setting_camera_cameraSpeedPreset1_tooltip" text="Speed preset activated by pressing 1 or A/X button on gamepad"/>
+		<text name="setting_camera_cameraSpeedPreset2" text="Speed Preset 2"/>
+		<text name="setting_camera_cameraSpeedPreset2_tooltip" text="Speed preset activated by pressing 2 or B/Circle button on gamepad"/>
+		<text name="setting_camera_cameraSpeedPreset3" text="Speed Preset 3"/>
+		<text name="setting_camera_cameraSpeedPreset3_tooltip" text="Speed preset activated by pressing 3 or X/Square button on gamepad"/>
+		<text name="setting_camera_cameraSpeedPreset4" text="Speed Preset 4"/>
+		<text name="setting_camera_cameraSpeedPreset4_tooltip" text="Speed preset activated by pressing 4 or Y/Triangle button on gamepad"/>
 	</texts>
 </l10n>

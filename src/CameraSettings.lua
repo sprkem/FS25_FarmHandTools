@@ -8,8 +8,19 @@ CameraSettings.CONTROLS = {}
 
 CameraSettings.menuItems = {
     'cameraMoveSpeed',
-    'cameraSprintMultiplier'
+    'cameraSprintMultiplier',
+    'cameraSpeedPreset1',
+    'cameraSpeedPreset2',
+    'cameraSpeedPreset3',
+    'cameraSpeedPreset4'
 }
+
+-- SHARED CONSTANTS
+local SPEED_VALUES = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20 }
+local SPEED_STRINGS = { "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "14", "16", "18", "20" }
+
+local SPRINT_VALUES = { 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+local SPRINT_STRINGS = { "2x", "3x", "4x", "5x", "6x", "7x", "8x", "9x", "10x" }
 
 -- SETTINGS DEFINITIONS
 CameraSettings.SETTINGS = {}
@@ -17,22 +28,72 @@ CameraSettings.SETTINGS = {}
 CameraSettings.SETTINGS.cameraMoveSpeed = {
     ['default'] = 8,
     ['serverOnly'] = false,
-    ['values'] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20 },
-    ['strings'] = { "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "14", "16", "18", "20" }
+    ['values'] = SPEED_VALUES,
+    ['strings'] = SPEED_STRINGS
 }
 
 CameraSettings.SETTINGS.cameraSprintMultiplier = {
     ['default'] = 3,
     ['serverOnly'] = false,
-    ['values'] = { 2, 3, 4, 5, 6, 7, 8, 9, 10 },
-    ['strings'] = { "2x", "3x", "4x", "5x", "6x", "7x", "8x", "9x", "10x" }
+    ['values'] = SPRINT_VALUES,
+    ['strings'] = SPRINT_STRINGS
+}
+
+CameraSettings.SETTINGS.cameraSpeedPreset1 = {
+    ['default'] = 0.5,
+    ['serverOnly'] = false,
+    ['values'] = SPEED_VALUES,
+    ['strings'] = SPEED_STRINGS
+}
+
+CameraSettings.SETTINGS.cameraSpeedPreset2 = {
+    ['default'] = 1,
+    ['serverOnly'] = false,
+    ['values'] = SPEED_VALUES,
+    ['strings'] = SPEED_STRINGS
+}
+
+CameraSettings.SETTINGS.cameraSpeedPreset3 = {
+    ['default'] = 10,
+    ['serverOnly'] = false,
+    ['values'] = SPEED_VALUES,
+    ['strings'] = SPEED_STRINGS
+}
+
+CameraSettings.SETTINGS.cameraSpeedPreset4 = {
+    ['default'] = 15,
+    ['serverOnly'] = false,
+    ['values'] = SPEED_VALUES,
+    ['strings'] = SPEED_STRINGS
 }
 
 -- Current settings (stored locally, no network sync needed)
 CameraSettings.settings = {
     cameraMoveSpeed = 8,
-    cameraSprintMultiplier = 3
+    cameraSprintMultiplier = 3,
+    cameraSpeedPreset1 = 0.5,
+    cameraSpeedPreset2 = 1,
+    cameraSpeedPreset3 = 10,
+    cameraSpeedPreset4 = 15
 }
+
+-- Apply a speed preset
+function CameraSettings.applyPreset(presetNumber)
+    local presetKey = "cameraSpeedPreset" .. presetNumber
+    local presetSpeed = CameraSettings.settings[presetKey]
+    
+    if presetSpeed then
+        CameraSettings.settings.cameraMoveSpeed = presetSpeed
+        CameraSettings.writeSettings()
+        print(string.format("[Free Camera] Applied Preset %d: %.1f m/s", presetNumber, presetSpeed))
+        
+        -- Update menu control if it exists
+        if CameraSettings.CONTROLS['cameraMoveSpeed'] then
+            local newIndex = CameraSettings.getStateIndex('cameraMoveSpeed', presetSpeed)
+            CameraSettings.CONTROLS['cameraMoveSpeed']:setState(newIndex)
+        end
+    end
+end
 
 -- Helper function to get next/previous speed value
 function CameraSettings.adjustSpeed(direction)
